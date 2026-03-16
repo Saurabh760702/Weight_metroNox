@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metronox · Precision Metal Weight Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f7f3 0%, #e3efe8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+        }
+
+        .metronox-app {
+            max-width: 1400px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 42px;
+            box-shadow: 0 40px 70px -25px #1b4a33, 0 10px 30px -10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            backdrop-filter: blur(2px);
+            transition: all 0.3s ease;
+        }
+
+        /* Top Bar - TW Metals style */
+        .top-bar {
+            background: #1a4a33;
+            color: white;
+            padding: 1rem 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #307a53;
+        }
+        .top-left {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .top-right {
+            display: flex;
+            gap: 2.2rem;
+        }
+        .top-bar span {
+            cursor: default;
+            opacity: 0.95;
+            transition: 0.2s;
+            padding: 0.2rem 0;
+            border-bottom: 2px solid transparent;
+        }
+        .top-bar span:hover {
+            opacity: 1;
+            border-bottom-color: #a5e0c0;
+        }
+
+        /* Brand Header - Metronox style */
+        .brand-header {
+            background: #ffffff;
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #d1efe2;
+            box-shadow: 0 2px 10px rgba(0,40,20,0.03);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .brand .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(145deg, #1b5e3c, #2d8655);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+        .brand .tagline {
+            font-size: 0.8rem;
+            color: #507b64;
+            font-weight: 500;
+            background: #eafaf2;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid #c2eed9;
+        }
+        .header-phone {
+            font-weight: 600;
+            color: #1f6f41;
+            background: #e2f5eb;
+            padding: 0.5rem 1.6rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            border: 1px solid #b1e6cc;
+            box-shadow: 0 4px 8px rgba(0,50,20,0.05);
+        }
+
+        /* Main Navigation */
+        .main-nav {
+            background: #f8fdfa;
+            padding: 0.8rem 2.5rem;
+            border-bottom: 1px solid #ceeade;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.2rem;
+            font-weight: 600;
+            color: #2b6042;
+        }
+        .main-nav span {
+            cursor: pointer;
+            padding: 0.3rem 0;
+            border-bottom: 3px solid transparent;
+            transition: 0.15s;
+        }
+        .main-nav span.active {
+            border-bottom-color: #2e8b5a;
+            color: #1e673f;
+            font-weight: 700;
+        }
+        .main-nav span:hover {
+            border-bottom-color: #9fd8bb;
+        }
+
+        /* Tab Bar - WEIGHT | CONVERSION | MISCELLANEOUS */
+        .tab-section {
+            padding: 1.5rem 2.5rem 0 2.5rem;
+        }
+        .tab-bar {
+            display: flex;
+            background: #eaf5f0;
+            border-radius: 60px;
+            padding: 0.5rem;
+            border: 1px solid #c1ead7;
+            max-width: 550px;
+            box-shadow: 0 4px 12px rgba(30,80,50,0.1);
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.9rem 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #2f6045;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+        .tab.active {
+            background: #2b8653;
+            color: white;
+            box-shadow: 0 6px 15px -5px #1d6f40;
+            transform: scale(1.02);
+        }
+
+        /* Main Content Area */
+        .content-area {
+            padding: 2rem 2.5rem 2.5rem 2.5rem;
+            transition: opacity 0.3s ease;
+        }
+
+        /* WEIGHT TAB CONTENT */
+        .weight-content {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0.5; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Weight Calculator Card */
+        .weight-card {
+            background: #ffffff;
+            border-radius: 36px;
+            padding: 2.2rem;
+            border: 1px solid #dcf3e8;
+            box-shadow: 0 20px 35px -20px #1f5e3f;
+        }
+        .weight-card h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #1f5f3d;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 2px solid #e4f5ec;
+            padding-bottom: 0.8rem;
+        }
+
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .field {
+            flex: 1 1 200px;
+        }
+        .field label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #3f7860;
+            letter-spacing: 0.4px;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .field select, .field input {
+            width: 100%;
+            padding: 0.95rem 1.3rem;
+            background: #fafffd;
+            border: 1.8px solid #d0efe1;
+            border-radius: 45px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .field select:focus, .field input:focus {
+            border-color: #2f9b60;
+            box-shadow: 0 0 0 4px rgba(47,155,96,0.15);
+        }
+
+        .size-area {
+            background: #f2fcf8;
+            border-radius: 28px;
+            padding: 2rem 2rem 1.5rem 2rem;
+            margin: 2rem 0;
+            border: 1px solid #c2eedb;
+        }
+        .size-area h4 {
+            color: #1b603b;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .dynamic-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #1f5239, #1b6a41);
+            border-radius: 34px;
+            padding: 1.8rem 2.2rem;
+            margin: 1.8rem 0 1.2rem;
+            color: white;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 15px 25px -12px #1b5e3b;
+        }
+        .result-left {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .result-item .label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .result-item .value {
+            font-size: 2.3rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .lbs-badge {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            padding: 0.8rem 2.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .footnote {
+            font-size: 0.75rem;
+            color: #618d75;
+            margin: 0.5rem 0 1.5rem;
+            font-style: italic;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.9rem 2.6rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 16px -8px rgba(0,50,20,0.15);
+        }
+        .btn-green {
+            background: #278052;
+            color: white;
+        }
+        .btn-green:hover {
+            background: #1c6a42;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -10px #1c6a42;
+        }
+        .btn-grey {
+            background: #edf8f2;
+            color: #2b6042;
+            border: 1px solid #c2ecd9;
+        }
+        .btn-grey:hover {
+            background: #deefe6;
+            transform: translateY(-2px);
+        }
+
+        /* Right Panel - Conversion & Miscellaneous */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 1.8rem 1.8rem;
+            border: 1px solid #d1f0e2;
+            box-shadow: 0 20px 30px -20px #1c5f3c;
+        }
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1b603b;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid #e4f7ed;
+            padding-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Conversion rows */
+        .conv-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f2fcf7;
+            padding: 0.4rem 0.4rem 0.4rem 1.2rem;
+            border-radius: 60px;
+            margin-bottom: 0.8rem;
+            border: 1px solid #c2eed9;
+        }
+        .conv-row span {
+            font-weight: 600;
+            color: #2a7047;
+            width: 100px;
+            font-size: 0.85rem;
+        }
+        .conv-row input {
+            width: 110px;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #bae7d2;
+            border-radius: 50px;
+            background: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .conv-row input:focus {
+            border-color: #2e8b5a;
+            box-shadow: 0 0 0 3px rgba(46,139,90,0.15);
+        }
+        .conv-row button {
+            background: #2b8653;
+            border: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.15s;
+            white-space: nowrap;
+        }
+        .conv-row button:hover {
+            background: #1d6a40;
+            transform: scale(1.02);
+        }
+
+        /* Symbol grid */
+        .symbol-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .symbol-item {
+            font-size: 0.9rem;
+            color: #1f5e3d;
+            background: #f0fbf5;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            border: 1px solid #c2eed9;
+        }
+        .symbol-item strong {
+            color: #1d7a45;
+            margin-right: 0.3rem;
+        }
+
+        /* Formula blocks */
+        .formula-block {
+            background: #f5fdf9;
+            border-radius: 24px;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid #c2eed9;
+        }
+        .formula-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .formula-row label {
+            font-weight: 700;
+            width: 35px;
+            color: #256b40;
+        }
+        .formula-row input {
+            width: 70px;
+            padding: 0.5rem;
+            border-radius: 40px;
+            border: 1px solid #c2eed9;
+            background: white;
+            outline: none;
+        }
+        .formula-row input:focus {
+            border-color: #2e8b5a;
+        }
+        .formula-result {
+            font-weight: 700;
+            color: #236f40;
+            margin-top: 0.8rem;
+            padding: 0.4rem;
+            background: white;
+            border-radius: 40px;
+            text-align: center;
+        }
+
+        /* CONVERSION TAB CONTENT */
+        .conversion-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            animation: fadeIn 0.3s;
+        }
+        .conversion-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 2rem;
+            border: 1px solid #d1f0e2;
+        }
+        .conversion-card h3 {
+            color: #1f603d;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* MISCELLANEOUS TAB CONTENT */
+        .misc-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            animation: fadeIn 0.3s;
+        }
+        .misc-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 2rem;
+            border: 1px solid #d1f0e2;
+        }
+        .misc-card h3 {
+            color: #1f603d;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #e5f5ed;
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            color: #2b6d47;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border-top: 1px solid #c2eed9;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<div class="metronox-app">
+    
+    <!-- Tab Bar - WEIGHT | CONVERSION | MISCELLANEOUS -->
+    <div class="tab-section">
+        <div class="tab-bar">
+            <div class="tab active" id="tabWeightBtn">WEIGHT</div>
+            <div class="tab" id="tabConversionBtn">CONVERSION</div>
+            <div class="tab" id="tabMiscBtn">MISCELLANEOUS</div>
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area" id="contentArea">
+        <!-- WEIGHT TAB CONTENT -->
+        <div id="weightContent" class="weight-content">
+            <!-- Left: Weight Calculator -->
+            <div class="weight-card">
+                <h2>⚖️ WEIGHT CALCULATOR</h2>
+
+                <div class="input-row">
+                    <div class="field">
+                        <label>SELECT YOUR METAL:</label>
+                        <select id="metalSelect">
+                            <option value="7.86">SS 201 (7.86 g/cm³)</option>
+                            <option value="7.80">SS 202 (7.80)</option>
+                            <option value="7.93" selected>SS 304 (7.93)</option>
+                            <option value="8.00">SS 316 (8.00)</option>
+                            <option value="7.75">SS 430 (7.75)</option>
+                            <option value="7.85">Carbon Steel (7.85)</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>SELECT A SHAPE:</label>
+                        <select id="shapeSelect">
+                            <option value="sheet">Sheet / Plate</option>
+                            <option value="circle">Circle / Round Bar</option>
+                            <option value="squarePlate">Square Plate</option>
+                            <option value="roundPipe">Round Pipe</option>
+                            <option value="squarePipe">Square Pipe</option>
+                            <option value="rectPipe">Rectangular Pipe</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div class="field">
+                        <label>NUMBER OF PIECES:</label>
+                        <input type="number" id="pieces" value="1" min="1">
+                    </div>
+                </div>
+
+                <div class="size-area">
+                    <h4>📏 ENTER SIZE INFORMATION (mm)</h4>
+                    <div class="dynamic-grid" id="dynamicFields"></div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-left">
+                        <div class="result-item">
+                            <div class="label">Approx. weight in kg*</div>
+                            <div class="value" id="weightKg">0.000</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="label">Approx. weight in lbs*</div>
+                            <div class="value" id="weightLbs">0.000</div>
+                        </div>
+                    </div>
+                    <div class="lbs-badge" id="totalLbsDisplay">0.000 lbs</div>
+                </div>
+                <div class="footnote">*These weights should be used for estimation purposes only. Plate weight does not allow for kerf.</div>
+
+                <div class="btn-group">
+                    <button class="btn btn-green" id="calculateBtn">CALCULATE</button>
+                    <button class="btn btn-grey" id="resetBtn">RESET</button>
+                    <button class="btn btn-grey" id="pdfBtn">📄 DOWNLOAD PDF</button>
+                </div>
+            </div>
+
+            <!-- Right: Conversion & Misc -->
+            <div class="right-panel">
+                <!-- Conversion Card -->
+                <div class="card">
+                    <h3>🔄 CONVERSION</h3>
+                    <div class="conv-row"><span>Inches =</span><input type="number" id="inVal" placeholder="0"><button id="in2mm">→ mm</button></div>
+                    <div class="conv-row"><span>Millimeter =</span><input type="number" id="mmVal" placeholder="0"><button id="mm2in">→ in</button></div>
+                    <div class="conv-row"><span>Pounds =</span><input type="number" id="lbVal" placeholder="0"><button id="lb2kg">→ kg</button></div>
+                    <div class="conv-row"><span>Kilograms =</span><input type="number" id="kgVal" placeholder="0"><button id="kg2lb">→ lb</button></div>
+                </div>
+
+                <!-- Miscellaneous Card -->
+                <div class="card">
+                    <h3>🔬 MISCELLANEOUS</h3>
+                    
+                    <h4 style="color: #1b603b; margin-bottom: 0.8rem;">SYMBOL → NAMES</h4>
+                    <div class="symbol-grid">
+                        <div class="symbol-item"><strong>C</strong> Carbon</div>
+                        <div class="symbol-item"><strong>V</strong> Vanadium</div>
+                        <div class="symbol-item"><strong>Mn</strong> Manganese</div>
+                        <div class="symbol-item"><strong>Cu</strong> Copper</div>
+                        <div class="symbol-item"><strong>Cr</strong> Chromium</div>
+                        <div class="symbol-item"><strong>Ni</strong> Nickel</div>
+                        <div class="symbol-item"><strong>Mo</strong> Molybdenum</div>
+                        <div class="symbol-item"><strong>Si</strong> Silicon</div>
+                        <div class="symbol-item"><strong>B</strong> Boron</div>
+                    </div>
+
+                    <h4 style="color: #1b603b; margin: 1.2rem 0 0.8rem;">CARBON EQUIVALENCY</h4>
+                    <div class="formula-block">
+                        <div class="formula-row"><label>C=</label><input id="ceC" value="0.2"><label>V=</label><input id="ceV" value="0"></div>
+                        <div class="formula-row"><label>Mn=</label><input id="ceMn" value="1.2"><label>Cu=</label><input id="ceCu" value="0"></div>
+                        <div class="formula-row"><label>Cr=</label><input id="ceCr" value="0.1"><label>Ni=</label><input id="ceNi" value="0.1"></div>
+                        <div class="formula-row"><label>Mo=</label><input id="ceMo" value="0"></div>
+                        <button class="btn btn-grey" id="calcCe" style="padding:0.5rem 1.5rem; width:100%;">CALCULATE</button>
+                        <div class="formula-result" id="ceResult">Carbon Equiv = 0.43</div>
+                    </div>
+
+                    <h4 style="color: #1b603b; margin: 1.2rem 0 0.8rem;">PCM FORMULA</h4>
+                    <div class="formula-block">
+                        <div class="formula-row"><label>C=</label><input id="pcmC" value="0.2"><label>Ni=</label><input id="pcmNi" value="0.1"></div>
+                        <div class="formula-row"><label>Si=</label><input id="pcmSi" value="0.3"><label>Mo=</label><input id="pcmMo" value="0.05"></div>
+                        <div class="formula-row"><label>Mn=</label><input id="pcmMn" value="1.2"><label>V=</label><input id="pcmV" value="0"></div>
+                        <div class="formula-row"><label>Cu=</label><input id="pcmCu" value="0.1"><label>B=</label><input id="pcmB" value="0"></div>
+                        <div class="formula-row"><label>Cr=</label><input id="pcmCr" value="0.2"></div>
+                        <button class="btn btn-grey" id="calcPcm" style="padding:0.5rem 1.5rem; width:100%;">CALCULATE</button>
+                        <div class="formula-result" id="pcmResult">PcM = 0.31</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONVERSION TAB CONTENT -->
+        <div id="conversionContent" class="conversion-content hidden">
+            <div class="conversion-card">
+                <h3>📏 LENGTH CONVERSION</h3>
+                <div class="conv-row"><span>Inches =</span><input type="number" id="inVal2" placeholder="0"><button id="in2mm2">→ mm</button></div>
+                <div class="conv-row"><span>Millimeter =</span><input type="number" id="mmVal2" placeholder="0"><button id="mm2in2">→ in</button></div>
+            </div>
+            <div class="conversion-card">
+                <h3>⚖️ WEIGHT CONVERSION</h3>
+                <div class="conv-row"><span>Pounds =</span><input type="number" id="lbVal2" placeholder="0"><button id="lb2kg2">→ kg</button></div>
+                <div class="conv-row"><span>Kilograms =</span><input type="number" id="kgVal2" placeholder="0"><button id="kg2lb2">→ lb</button></div>
+            </div>
+            <div class="conversion-card">
+                <h3>🌡️ TEMPERATURE</h3>
+                <div class="conv-row"><span>Fahrenheit =</span><input type="number" id="fVal" placeholder="0"><button id="f2c">→ °C</button></div>
+                <div class="conv-row"><span>Celsius =</span><input type="number" id="cVal" placeholder="0"><button id="c2f">→ °F</button></div>
+            </div>
+        </div>
+
+        <!-- MISCELLANEOUS TAB CONTENT -->
+        <div id="miscContent" class="misc-content hidden">
+            <div class="misc-card">
+                <h3>🔤 SYMBOL → NAMES</h3>
+                <div class="symbol-grid" style="grid-template-columns: repeat(3,1fr);">
+                    <div class="symbol-item"><strong>C</strong> Carbon</div><div class="symbol-item"><strong>V</strong> Vanadium</div>
+                    <div class="symbol-item"><strong>Mn</strong> Manganese</div><div class="symbol-item"><strong>Cu</strong> Copper</div>
+                    <div class="symbol-item"><strong>Cr</strong> Chromium</div><div class="symbol-item"><strong>Ni</strong> Nickel</div>
+                    <div class="symbol-item"><strong>Mo</strong> Molybdenum</div><div class="symbol-item"><strong>Si</strong> Silicon</div>
+                    <div class="symbol-item"><strong>B</strong> Boron</div>
+                </div>
+            </div>
+            <div class="misc-card">
+                <h3>🧪 CARBON EQUIVALENCY</h3>
+                <div class="formula-block">
+                    <div class="formula-row"><label>C=</label><input id="ceC2" value="0.2"><label>V=</label><input id="ceV2" value="0"></div>
+                    <div class="formula-row"><label>Mn=</label><input id="ceMn2" value="1.2"><label>Cu=</label><input id="ceCu2" value="0"></div>
+                    <div class="formula-row"><label>Cr=</label><input id="ceCr2" value="0.1"><label>Ni=</label><input id="ceNi2" value="0.1"></div>
+                    <div class="formula-row"><label>Mo=</label><input id="ceMo2" value="0"></div>
+                    <button class="btn btn-green" id="calcCe2" style="margin-top:0.5rem;">CALCULATE</button>
+                    <div class="formula-result" id="ceResult2">0.43</div>
+                </div>
+            </div>
+            <div class="misc-card">
+                <h3>📐 PCM FORMULA</h3>
+                <div class="formula-block">
+                    <div class="formula-row"><label>C=</label><input id="pcmC2" value="0.2"><label>Ni=</label><input id="pcmNi2" value="0.1"></div>
+                    <div class="formula-row"><label>Si=</label><input id="pcmSi2" value="0.3"><label>Mo=</label><input id="pcmMo2" value="0.05"></div>
+                    <div class="formula-row"><label>Mn=</label><input id="pcmMn2" value="1.2"><label>V=</label><input id="pcmV2" value="0"></div>
+                    <div class="formula-row"><label>Cu=</label><input id="pcmCu2" value="0.1"><label>B=</label><input id="pcmB2" value="0"></div>
+                    <div class="formula-row"><label>Cr=</label><input id="pcmCr2" value="0.2"></div>
+                    <button class="btn btn-green" id="calcPcm2" style="margin-top:0.5rem;">CALCULATE</button>
+                    <div class="formula-result" id="pcmResult2">0.31</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        // ========== TAB SWITCHING ==========
+        const weightContent = document.getElementById('weightContent');
+        const conversionContent = document.getElementById('conversionContent');
+        const miscContent = document.getElementById('miscContent');
+        
+        const tabWeight = document.getElementById('tabWeightBtn');
+        const tabConversion = document.getElementById('tabConversionBtn');
+        const tabMisc = document.getElementById('tabMiscBtn');
+
+        function hideAllTabs() {
+            weightContent.classList.add('hidden');
+            conversionContent.classList.add('hidden');
+            miscContent.classList.add('hidden');
+            
+            tabWeight.classList.remove('active');
+            tabConversion.classList.remove('active');
+            tabMisc.classList.remove('active');
+        }
+
+        tabWeight.addEventListener('click', () => {
+            hideAllTabs();
+            weightContent.classList.remove('hidden');
+            tabWeight.classList.add('active');
+        });
+
+        tabConversion.addEventListener('click', () => {
+            hideAllTabs();
+            conversionContent.classList.remove('hidden');
+            tabConversion.classList.add('active');
+        });
+
+        tabMisc.addEventListener('click', () => {
+            hideAllTabs();
+            miscContent.classList.remove('hidden');
+            tabMisc.classList.add('active');
+        });
+
+        // ========== WEIGHT CALCULATOR ==========
+        const metalSelect = document.getElementById('metalSelect');
+        const shapeSelect = document.getElementById('shapeSelect');
+        const dynamicDiv = document.getElementById('dynamicFields');
+        const piecesInput = document.getElementById('pieces');
+        const weightKgSpan = document.getElementById('weightKg');
+        const weightLbsSpan = document.getElementById('weightLbs');
+        const totalLbsSpan = document.getElementById('totalLbsDisplay');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const pdfBtn = document.getElementById('pdfBtn');
+
+        let density = 7.93; // default SS304
+
+        metalSelect.addEventListener('change', (e) => {
+            density = parseFloat(e.target.value);
+        });
+
+        // Dynamic fields render based on shape
+        function renderShape(shape) {
+            let html = '';
+            if (shape === 'sheet') {
+                html = `<div class="field"><label>Thickness (mm)</label><input type="number" id="thickness" value="2" step="any"></div>
+                        <div class="field"><label>Width (mm)</label><input type="number" id="width" value="1000" step="any"></div>
+                        <div class="field"><label>Length (mm)</label><input type="number" id="length" value="1000" step="any"></div>`;
+            } else if (shape === 'circle') {
+                html = `<div class="field"><label>Diameter (mm)</label><input type="number" id="diameter" value="20" step="any"></div>
+                        <div class="field"><label>Thickness (mm)</label><input type="number" id="thickness" value="2" step="any"></div>`;
+            } else if (shape === 'squarePlate') {
+                html = `<div class="field"><label>Side (mm)</label><input type="number" id="side" value="20" step="any"></div>
+                        <div class="field"><label>Thickness (mm)</label><input type="number" id="thickness" value="2" step="any"></div>`;
+            } else if (shape === 'roundPipe') {
+                html = `<div class="field"><label>Outer Diameter (mm)</label><input type="number" id="od" value="50" step="any"></div>
+                        <div class="field"><label>Wall Thickness (mm)</label><input type="number" id="wt" value="3" step="any"></div>
+                        <div class="field"><label>Length (mm)</label><input type="number" id="length" value="1000" step="any"></div>`;
+            } else if (shape === 'squarePipe') {
+                html = `<div class="field"><label>Side (mm)</label><input type="number" id="side" value="40" step="any"></div>
+                        <div class="field"><label>Wall Thickness (mm)</label><input type="number" id="wt" value="2" step="any"></div>
+                        <div class="field"><label>Length (mm)</label><input type="number" id="length" value="1000" step="any"></div>`;
+            } else if (shape === 'rectPipe') {
+                html = `<div class="field"><label>Width (mm)</label><input type="number" id="width" value="50" step="any"></div>
+                        <div class="field"><label>Height (mm)</label><input type="number" id="height" value="30" step="any"></div>
+                        <div class="field"><label>Wall Thickness (mm)</label><input type="number" id="wt" value="2" step="any"></div>
+                        <div class="field"><label>Length (mm)</label><input type="number" id="length" value="1000" step="any"></div>`;
+            }
+            dynamicDiv.innerHTML = html;
+        }
+
+        renderShape('sheet');
+        shapeSelect.addEventListener('change', (e) => renderShape(e.target.value));
+
+        // Calculate weight using exact industry formulas
+        function calculateWeight() {
+            const shape = shapeSelect.value;
+            const pieces = parseFloat(piecesInput.value) || 1;
+            
+            const get = (id) => {
+                const el = document.getElementById(id);
+                return el ? parseFloat(el.value) || 0 : 0;
+            };
+            
+            let weightKg = 0;
+            const factor = 1e-6; // 1/1,000,000 as per formulas
+
+            if (shape === 'sheet') {
+                // Weight = (Thickness × Width × Length × Density) / 1,000,000
+                const t = get('thickness');
+                const w = get('width');
+                const l = get('length');
+                weightKg = (t * w * l * density) * factor;
+            } 
+            else if (shape === 'circle') {
+                // Weight = (π × Diameter² / 4 × Thickness × Density) / 1,000,000
+                const d = get('diameter');
+                const t = get('thickness');
+                weightKg = (Math.PI * d * d / 4 * t * density) * factor;
+            }
+            else if (shape === 'squarePlate') {
+                // Weight = (Side × Side × Thickness × Density) / 1,000,000
+                const s = get('side');
+                const t = get('thickness');
+                weightKg = (s * s * t * density) * factor;
+            }
+            else if (shape === 'roundPipe') {
+                // Weight = (π × (OD − WT) × WT × Length × Density) / 1,000,000
+                const od = get('od');
+                const wt = get('wt');
+                const l = get('length');
+                weightKg = (Math.PI * (od - wt) * wt * l * density) * factor;
+            }
+            else if (shape === 'squarePipe') {
+                // Weight = (4 × WT × (Side − WT) × Length × Density) / 1,000,000
+                const s = get('side');
+                const wt = get('wt');
+                const l = get('length');
+                weightKg = (4 * wt * (s - wt) * l * density) * factor;
+            }
+            else if (shape === 'rectPipe') {
+                // Weight = (2 × WT × (Width + Height − 2WT) × Length × Density) / 1,000,000
+                const w = get('width');
+                const h = get('height');
+                const wt = get('wt');
+                const l = get('length');
+                weightKg = (2 * wt * (w + h - 2 * wt) * l * density) * factor;
+            }
+
+            const totalKg = weightKg * pieces;
+            const totalLbs = totalKg * 2.20462;
+            
+            weightKgSpan.innerText = totalKg.toFixed(3);
+            weightLbsSpan.innerText = totalLbs.toFixed(3);
+            totalLbsSpan.innerText = totalLbs.toFixed(3) + ' lbs';
+        }
+
+        calculateBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            calculateWeight();
+        });
+
+        resetBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        pdfBtn.addEventListener('click', () => {
+            const kg = weightKgSpan.innerText;
+            const lbs = weightLbsSpan.innerText;
+            alert(`📄 PDF Download\nWeight: ${kg} kg / ${lbs} lbs\nThank you for using Metronox Calculator`);
+        });
+
+        // ========== CONVERSION FUNCTIONS ==========
+        document.getElementById('in2mm').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('inVal').value);
+            if (!isNaN(v)) document.getElementById('mmVal').value = (v * 25.4).toFixed(3);
+        });
+        document.getElementById('mm2in').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('mmVal').value);
+            if (!isNaN(v)) document.getElementById('inVal').value = (v / 25.4).toFixed(3);
+        });
+        document.getElementById('lb2kg').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('lbVal').value);
+            if (!isNaN(v)) document.getElementById('kgVal').value = (v / 2.20462).toFixed(3);
+        });
+        document.getElementById('kg2lb').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('kgVal').value);
+            if (!isNaN(v)) document.getElementById('lbVal').value = (v * 2.20462).toFixed(3);
+        });
+
+        // Conversion tab converters
+        document.getElementById('in2mm2').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('inVal2').value);
+            if (!isNaN(v)) document.getElementById('mmVal2').value = (v * 25.4).toFixed(3);
+        });
+        document.getElementById('mm2in2').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('mmVal2').value);
+            if (!isNaN(v)) document.getElementById('inVal2').value = (v / 25.4).toFixed(3);
+        });
+        document.getElementById('lb2kg2').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('lbVal2').value);
+            if (!isNaN(v)) document.getElementById('kgVal2').value = (v / 2.20462).toFixed(3);
+        });
+        document.getElementById('kg2lb2').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('kgVal2').value);
+            if (!isNaN(v)) document.getElementById('lbVal2').value = (v * 2.20462).toFixed(3);
+        });
+        document.getElementById('f2c').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('fVal').value);
+            if (!isNaN(v)) document.getElementById('cVal').value = ((v - 32) / 1.8).toFixed(1);
+        });
+        document.getElementById('c2f').addEventListener('click', () => {
+            const v = parseFloat(document.getElementById('cVal').value);
+            if (!isNaN(v)) document.getElementById('fVal').value = ((v * 1.8) + 32).toFixed(1);
+        });
+
+        // ========== CARBON EQUIVALENCY ==========
+        function calculateCE() {
+            const C = parseFloat(document.getElementById('ceC').value) || 0;
+            const Mn = parseFloat(document.getElementById('ceMn').value) || 0;
+            const Cr = parseFloat(document.getElementById('ceCr').value) || 0;
+            const Mo = parseFloat(document.getElementById('ceMo').value) || 0;
+            const V = parseFloat(document.getElementById('ceV').value) || 0;
+            const Cu = parseFloat(document.getElementById('ceCu').value) || 0;
+            const Ni = parseFloat(document.getElementById('ceNi').value) || 0;
+            
+            const ce = C + (Mn/6) + ((Cr + Mo + V)/5) + ((Ni + Cu)/15);
+            document.getElementById('ceResult').innerText = 'Carbon Equiv = ' + ce.toFixed(3);
+            
+            const ceResult2 = document.getElementById('ceResult2');
+            if (ceResult2) ceResult2.innerText = ce.toFixed(3);
+        }
+
+        document.getElementById('calcCe').addEventListener('click', calculateCE);
+        
+        const calcCe2 = document.getElementById('calcCe2');
+        if (calcCe2) {
+            calcCe2.addEventListener('click', () => {
+                const C = parseFloat(document.getElementById('ceC2').value) || 0;
+                const Mn = parseFloat(document.getElementById('ceMn2').value) || 0;
+                const Cr = parseFloat(document.getElementById('ceCr2').value) || 0;
+                const Mo = parseFloat(document.getElementById('ceMo2').value) || 0;
+                const V = parseFloat(document.getElementById('ceV2').value) || 0;
+                const Cu = parseFloat(document.getElementById('ceCu2').value) || 0;
+                const Ni = parseFloat(document.getElementById('ceNi2').value) || 0;
+                
+                const ce = C + (Mn/6) + ((Cr + Mo + V)/5) + ((Ni + Cu)/15);
+                document.getElementById('ceResult2').innerText = ce.toFixed(3);
+            });
+        }
+
+        // ========== PCM FORMULA ==========
+        function calculatePCM() {
+            const C = parseFloat(document.getElementById('pcmC').value) || 0;
+            const Si = parseFloat(document.getElementById('pcmSi').value) || 0;
+            const Mn = parseFloat(document.getElementById('pcmMn').value) || 0;
+            const Cu = parseFloat(document.getElementById('pcmCu').value) || 0;
+            const Cr = parseFloat(document.getElementById('pcmCr').value) || 0;
+            const Ni = parseFloat(document.getElementById('pcmNi').value) || 0;
+            const Mo = parseFloat(document.getElementById('pcmMo').value) || 0;
+            const V = parseFloat(document.getElementById('pcmV').value) || 0;
+            const B = parseFloat(document.getElementById('pcmB').value) || 0;
+            
+            const pcm = C + (Si/30) + ((Mn + Cu + Cr)/20) + (Ni/60) + (Mo/15) + (V/10) + (5*B);
+            document.getElementById('pcmResult').innerText = 'PcM = ' + pcm.toFixed(3);
+            
+            const pcmResult2 = document.getElementById('pcmResult2');
+            if (pcmResult2) pcmResult2.innerText = pcm.toFixed(3);
+        }
+
+        document.getElementById('calcPcm').addEventListener('click', calculatePCM);
+        
+        const calcPcm2 = document.getElementById('calcPcm2');
+        if (calcPcm2) {
+            calcPcm2.addEventListener('click', () => {
+                const C = parseFloat(document.getElementById('pcmC2').value) || 0;
+                const Si = parseFloat(document.getElementById('pcmSi2').value) || 0;
+                const Mn = parseFloat(document.getElementById('pcmMn2').value) || 0;
+                const Cu = parseFloat(document.getElementById('pcmCu2').value) || 0;
+                const Cr = parseFloat(document.getElementById('pcmCr2').value) || 0;
+                const Ni = parseFloat(document.getElementById('pcmNi2').value) || 0;
+                const Mo = parseFloat(document.getElementById('pcmMo2').value) || 0;
+                const V = parseFloat(document.getElementById('pcmV2').value) || 0;
+                const B = parseFloat(document.getElementById('pcmB2').value) || 0;
+                
+                const pcm = C + (Si/30) + ((Mn + Cu + Cr)/20) + (Ni/60) + (Mo/15) + (V/10) + (5*B);
+                document.getElementById('pcmResult2').innerText = pcm.toFixed(3);
+            });
+        }
+
+        // Initialize with calculation
+        window.addEventListener('load', () => {
+            calculateWeight();
+            calculateCE();
+            calculatePCM();
+        });
+    })();
+</script>
+</body>
+</html>
